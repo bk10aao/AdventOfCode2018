@@ -26,7 +26,6 @@ public class DayOne {
         }
     }
 
-
     public static void main(String[] args) {
         DayOne dayOne = new DayOne();
         String[] inputData = input.split("\n");
