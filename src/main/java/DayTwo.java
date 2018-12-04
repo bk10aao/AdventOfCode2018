@@ -6,69 +6,43 @@ public class DayTwo {
     private int tripleCount = 0;
 
     public int getScore(String input) {
-
         for(String s : input.split("\n")) {
             char[] sequence = s.toCharArray();
             Arrays.sort(sequence);
-            if(countTriples(sequence)) {
-                tripleCount++;
-            }
-            if(countDoubles(sequence)) {
-                doubleCount++;
-            }
+            countSets(sequence);
         }
         return calculateScore();
     }
 
-    private boolean countDoubles(char[] sequence) {
+    private void countSets(char[] sequence) {
+        boolean hasDouble = false;
+        boolean hasTriple = false;
         for(int i = 0; i + 1 < sequence.length; i++) {
-            char characterA = sequence[i];
-            char characterB = sequence[i + 1];
-            if(characterA == characterB) {
+            if(sequence[i] == sequence[i + 1]) {
                 if(i + 2 < sequence.length) {
-                    char characterC = sequence[i + 2];
-                    if(characterA == characterB && characterB != characterC) {
-                        return true;
+                    if(sequence[i] == sequence[i + 1] && sequence[i + 1] == sequence[i + 2]) {
+                        hasTriple = true;
+                    } else {
+                        hasDouble = true;
                     }
                 } else {
-                    return true;
+                    hasDouble = true;
                 }
                 i++;
             }
-
         }
-        return false;
-    }
-
-    private boolean countTriples(char[] sequence) {
-        for(int i = 0; i + 2 < sequence.length; i++) {
-            char characterA = sequence[i];
-            char characterB = sequence[i + 1];
-            char characterC = sequence[i + 2];
-            if(characterA == characterB && characterB == characterC) {
-                return true;
-            }
-        }
-        return false;
+        doubleCount += hasDouble ? 1 : 0;
+        tripleCount+= hasTriple ? 1 : 0;
     }
 
     private int calculateScore() {
-        if(doubleCount > 0 && tripleCount > 0) {
-            return doubleCount * tripleCount;
-        } else if(doubleCount == 0 && tripleCount > 0) {
+        if(doubleCount == 0 && tripleCount > 0) {
             return tripleCount;
-        } else if(doubleCount > 0 && tripleCount == 0) {
+        }
+        if(doubleCount > 0 && tripleCount == 0) {
             return doubleCount;
         }
-        return 0;
-    }
-
-    public int getDoubleCount() {
-        return doubleCount;
-    }
-
-    public int getTripleCount() {
-        return tripleCount;
+        return doubleCount * tripleCount;
     }
 
     public static void main(String[] args) {
