@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DayTwo {
@@ -19,7 +18,6 @@ public class DayTwo {
             }
         }
         return calculateScore();
-
     }
 
     private boolean countDoubles(char[] sequence) {
@@ -31,12 +29,11 @@ public class DayTwo {
                     char characterC = sequence[i + 2];
                     if(characterA == characterB && characterB != characterC) {
                         return true;
-                    } else {
-                        i++;
                     }
                 } else {
                     return true;
                 }
+                i++;
             }
 
         }
@@ -74,23 +71,11 @@ public class DayTwo {
         return tripleCount;
     }
 
-    public String getMostCommonIDString(String input) {
-        String[] values = input.split("\n");
-        System.out.println(Arrays.toString(values));
-        hasMoreThanOneMatch(values);
-        return "";
-    }
-
-    private void hasMoreThanOneMatch(String[] lines) {
-        for(int i = 0; i < lines.length; i++) {
-            System.out.println(lines[i].toCharArray()[0]);
-        }
-    }
-
     public static void main(String[] args) {
         DayTwo dayTwo = new DayTwo();
         System.out.println(dayTwo.getScore(puzzleInput));
     }
+
     private static String puzzleInput = "xrysntkqrduheficajodiglvzw\n" +
                                         "xzymntkqrbuhefmcajodiflvzw\n" +
                                         "xpysetkyrbuhefmcajodiglvgw\n" +
