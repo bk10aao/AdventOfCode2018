@@ -74,4 +74,18 @@ public class DayTwoTest {
         assertEquals(4, dayTwo.getDoubleCount());
         assertEquals(3, dayTwo.getTripleCount());
     }
+
+    @Test
+    public void blahhhh() {
+        DayTwo dayTwo = new DayTwo();
+        String input = "abcde\n" +
+                        "fghij\n" +
+                        "klmno\n" +
+                        "pqrst\n" +
+                        "fguij\n" +
+                        "axcye\n" +
+                        "wvxyz";
+        dayTwo.getMostCommonIDString(input);
+        assertEquals(0, 1);
+    }
 }

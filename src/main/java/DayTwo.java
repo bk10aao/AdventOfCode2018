@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DayTwo {
@@ -71,6 +72,19 @@ public class DayTwo {
 
     public int getTripleCount() {
         return tripleCount;
+    }
+
+    public String getMostCommonIDString(String input) {
+        String[] values = input.split("\n");
+        System.out.println(Arrays.toString(values));
+        hasMoreThanOneMatch(values);
+        return "";
+    }
+
+    private void hasMoreThanOneMatch(String[] lines) {
+        for(int i = 0; i < lines.length; i++) {
+            System.out.println(lines[i].toCharArray()[0]);
+        }
     }
 
     public static void main(String[] args) {
