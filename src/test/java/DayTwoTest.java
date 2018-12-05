@@ -50,7 +50,7 @@ public class DayTwoTest {
 
     @Test
     public void givenAllInputs_returnScoreOfTwelve() {
-        String input = "abcdef\n" +
+        String input =  "abcdef\n" +
                         "bababc\n" +
                         "abbcde\n" +
                         "abcccd\n" +

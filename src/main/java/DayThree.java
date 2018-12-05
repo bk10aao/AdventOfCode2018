@@ -4,9 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.util.Collections.frequency;
-import static org.codehaus.groovy.runtime.InvokerHelper.asList;
-
 public class DayThree {
 
     private int[][] fabric;
@@ -38,19 +35,12 @@ public class DayThree {
         return getCount();
     }
 
-    public int getCompleteSquare() {
-        ArrayList<Integer> allValues = new ArrayList<Integer>();
-        for(int i = 1; i < fabric.length; i++) {
-            allValues.add(i);
-        }
-//        for(int i = 1; i < allValues.size(); i++) {
-//            if(!overlapped.contains(allValues.get(i))) {
-//                return allValues.get(i);
-//            }
-//        }
+    public void getCompleteSquare() {
+        int[] range = IntStream.rangeClosed(0, fabric.length ).toArray();
+        List<Integer> allValues = new ArrayList<Integer>();
+        Collections.addAll(allValues, Arrays.stream(range).boxed().toArray(Integer[]::new));
         allValues.removeAll(overlapped);
-        System.out.println(allValues.toString());
-        return -1;
+        System.out.println(Arrays.toString(allValues.toArray()));
     }
 
     private int getCount() {
@@ -87,7 +77,7 @@ public class DayThree {
         DayThree dayThree = new DayThree();
         dayThree.setupFabric(999, 999);
         System.out.println(dayThree.getOverlappedCount(input));
-        System.out.println(dayThree.getCompleteSquare());
+        dayThree.getCompleteSquare();
     }
 
     private static final String input = "#1 @ 37,526: 17x23\n" +

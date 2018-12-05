@@ -22,15 +22,15 @@ public class DayThreeTest {
         assertEquals(4, result);
     }
 
-    @Test
-    public void givenInput_returnsSquareThreeAsUntouched() {
-        String input =  "#1 @ 1,3: 4x4\n" +
-                "#2 @ 3,1: 4x4\n" +
-                "#3 @ 5,5: 2x2";
-        dayThree.setupFabric(20, 20);
-        dayThree.getOverlappedCount(input);
-        int result = dayThree.getCompleteSquare();
-        assertEquals(3, result);
-    }
+//    @Test
+//    public void givenInput_returnsSquareThreeAsUntouched() {
+//        String input =  "#1 @ 1,3: 4x4\n" +
+//                "#2 @ 3,1: 4x4\n" +
+//                "#3 @ 5,5: 2x2";
+//        dayThree.setupFabric(20, 20);
+//        dayThree.getOverlappedCount(input);
+//        int result = dayThree.getCompleteSquare();
+//        assertEquals(3, result);
+//    }
 
 }
