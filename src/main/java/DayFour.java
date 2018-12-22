@@ -1,103 +1,140 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 
 public class DayFour {
 
-    private String[] shiftPatterns;
+    private List<Guard> gaurds = new ArrayList<Guard>();
+    private List<String > shiftActivity;
 
-    private HashMap<Integer, Gaurd> gaurds = new HashMap<Integer, Gaurd>();
+    public static void main(String[] args) {
+        DayFour dayFour = new DayFour();
+        dayFour.setUp(puzzleInput);
+        System.out.println(dayFour.calculateStratergyPartOne());
+        System.out.println(dayFour.calculateStratergyPartTwo());
+    }
 
-    public void setUp(final String input) {
-        shiftPatterns = input.split("\n");
-        Arrays.sort(shiftPatterns);
-        for(String line : shiftPatterns) {
-            String[] lineValues = line.split(" ");
-            if(isNewsGaurd(lineValues[2])) {
-                int gaurdNumber = Integer.parseInt(lineValues[3].replace("#", ""));
-                if (!gaurds.containsKey(gaurdNumber)) {
-                    gaurds.put(gaurdNumber, new Gaurd(gaurdNumber));
+    public int calculateStratergyPartOne() {
+        return getGuardThatSleptTheMost() * gaurds.get(getGuardNumberIndex(getGuardThatSleptTheMost())).getHighestSleptMinute();
+    }
+
+    public int calculateStratergyPartTwo() {
+        int mostSleptValue = Integer.MIN_VALUE;
+        int mostSleptMinuteGaurdNumber = Integer.MIN_VALUE;
+        int mostSleptMinute = Integer.MIN_VALUE;
+        for(Guard g : gaurds) {
+            int[] timeSlots = g.timeSlots;
+            for(int i = 0; i < timeSlots.length; i++) {
+                if(timeSlots[i] > mostSleptValue) {
+                    mostSleptValue = timeSlots[i];
+                    mostSleptMinuteGaurdNumber = g.guardNumber;
+                    mostSleptMinute = i;
                 }
             }
         }
+        return mostSleptMinute * mostSleptMinuteGaurdNumber;
     }
 
-    private boolean isNewsGaurd(final String lineValue) {
-        return !lineValue.equalsIgnoreCase("wakes") &&
-               !lineValue.equalsIgnoreCase("falls") &&
-               !lineValue.equalsIgnoreCase("asleep");
+    private void updateSleepTime(int guardNumber, int fallAsleepTime, String time) {
+        int wakeupTime;
+        wakeupTime = Integer.parseInt(time.split(":")[1]);
+        int gaurdNumberIndex = getGuardNumberIndex(guardNumber);
+        gaurds.get(gaurdNumberIndex).timeSlept += wakeupTime - fallAsleepTime;
+        gaurds.get(gaurdNumberIndex).incrementTimeSleptByAmount(fallAsleepTime, wakeupTime);
     }
 
-    public int calculateSleepTime() {
-        int gaurdNumber = -1;
-        int sleepStartTime = -1;
-        for(String s : shiftPatterns) {
-            if(s.contains("Guard")) {
-                gaurdNumber = Integer.parseInt(s.split(" ")[3].replace("#", ""));
-            } else if(s.contains("falls")) {
-                sleepStartTime = Integer.parseInt(s.split(" ")[1].replace("]", "").split(":")[1]);
-            } else if(s.contains("wakes")) {
-                int sleepEndTime = Integer.parseInt(s.split(" ")[1].replace("]", "").split(":")[1]);
-                gaurds.get(gaurdNumber).incrementTimeSleptByAmount(sleepEndTime - sleepStartTime, sleepStartTime);
+    private void checkGuardExistsElseAdd(int guardNumber) {
+        if(getGuardNumberIndex(guardNumber) == -1) {
+            gaurds.add(new Guard(guardNumber));
+        }
+    }
+
+    private int getGuardNumber(String activity) {
+        return Integer.parseInt(activity.split("] ")[1].split(" ")[1].replace("#", ""));
+    }
+
+    private int getGuardNumberIndex(int guardCheckNumber) {
+        for(int i = 0; i < gaurds.size(); i++) {
+            Guard gaurd = gaurds.get(i);
+            if(gaurd.guardNumber == guardCheckNumber) return i;
+        }
+        return -1;
+    }
+
+    private String getAction(String activity) {
+        return activity.split("] ")[1];
+    }
+
+    private String getTime(String activity) {
+        return activity.split(" ")[1].replace("]", "");
+    }
+
+    public int getGuardThatSleptTheMost() {
+        int highestSleepTime = Integer.MIN_VALUE;
+        int guardNumber = Integer.MIN_VALUE;
+        for(Guard guard : gaurds) {
+            if(guard.timeSlept > highestSleepTime) {
+                guardNumber = guard.guardNumber;
+                highestSleepTime = guard.timeSlept;
             }
         }
-        gaurdNumber = getGaurdNumberWithHighestSleepValue();
-        final int mostSleptMinute = gaurds.get(gaurdNumber).getHighestSleptMinute();
-        return gaurdNumber * mostSleptMinute;
+        return guardNumber;
     }
 
-    private int getGaurdNumberWithHighestSleepValue() {
-        int highestSleepValue = Integer.MIN_VALUE;
-        int gaurdNumberSleptTheMost = -1;
-        for(int gaurdNumber : gaurds.keySet()) {
-            if(gaurds.get(gaurdNumber).getTimeSlept() > highestSleepValue) {
-                highestSleepValue = gaurds.get(gaurdNumber).getTimeSlept();
-                gaurdNumberSleptTheMost = gaurdNumber;
+    public void setUp(String input) {
+        shiftActivity = Arrays.asList(input.split("\n"));
+        Collections.sort(shiftActivity);
+        produceShiftPatterns();
+    }
+
+    private void produceShiftPatterns() {
+        int guardNumber = -1;
+        int fallAsleepTime = -1;
+        for (String activity : shiftActivity) {
+            String time = getTime(activity);
+            String action = getAction(activity);
+            if (action.startsWith("Guard")) {
+                guardNumber = getGuardNumber(activity);
+                checkGuardExistsElseAdd(guardNumber);
+            } else if (action.equalsIgnoreCase("falls asleep")) {
+                fallAsleepTime = Integer.parseInt(time.split(":")[1]);
+            } else if (action.equals("wakes up")) {
+                updateSleepTime(guardNumber, fallAsleepTime, time);
             }
         }
-        return gaurdNumberSleptTheMost;
     }
 
-    private class Gaurd {
+    private class Guard {
 
-        private int gaurdNumber;
+        private int guardNumber;
         private int timeSlept = 0;
 
         private int[] timeSlots = new int[60];
 
-        private Gaurd(int gaurdNumber) {
+        private Guard(int gaurdNumber) {
             Arrays.fill(timeSlots, 0);
-            this.gaurdNumber = gaurdNumber;
+            this.guardNumber = gaurdNumber;
         }
 
-        public void incrementTimeSleptByAmount(final int sleepTime, final int sleepStartTime) {
-            this.timeSlept += sleepTime;
-            for(int i = sleepStartTime; i < sleepStartTime + sleepTime; i++) {
+
+        public void incrementTimeSleptByAmount(final int sleepStartTime, final int wakeupTime) {
+            for(int i = sleepStartTime; i < wakeupTime; i++) {
                 timeSlots[i]++;
             }
-        }
-
-        public int getTimeSlept() {
-            return timeSlept;
         }
 
         public int getHighestSleptMinute() {
             int highestSleptMinuteValue = Integer.MIN_VALUE;
             int highestSleptMinuteTimePoint = Integer.MIN_VALUE;
             for(int i = 0; i < timeSlots.length; i++) {
-                if(timeSlots[i] > highestSleptMinuteValue) {
+                if(timeSlots[i] >= highestSleptMinuteValue) {
                     highestSleptMinuteValue = timeSlots[i];
                     highestSleptMinuteTimePoint = i;
                 }
             }
             return highestSleptMinuteTimePoint;
         }
-    }
-
-    public static void main(String[] args) {
-        DayFour dayFour = new DayFour();
-        dayFour.setUp(puzzleInput);
-        System.out.println(dayFour.calculateSleepTime());
     }
 
     private static final String puzzleInput =   "[1518-08-21 00:39] wakes up\n" +

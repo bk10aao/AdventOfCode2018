@@ -8,8 +8,8 @@ public class DayFourTest {
 
     @Before
     public void setup() {
-      this.dayFour = new DayFour();
-        String input =  "[1518-11-01 00:00] Guard #10 begins shift\n" +
+        this.dayFour = new DayFour();
+        String input = "[1518-11-01 00:00] Guard #10 begins shift\n" +
                 "[1518-11-01 00:05] falls asleep\n" +
                 "[1518-11-01 00:25] wakes up\n" +
                 "[1518-11-01 00:30] falls asleep\n" +
@@ -29,24 +29,15 @@ public class DayFourTest {
         dayFour.setUp(input);
     }
 
-
     @Test
-    public void givenInput_gaurdTenSpendsFiftyMinutesAsleep() {
-        dayFour.calculateSleepTime();
-        int gaurdOneSleepTime = dayFour.getGaurdsSleepCount(10);
-        assertEquals(50, gaurdOneSleepTime);
-    }
-
-    @Test
-    public void givenInput_gaurdNinetyNineSpendsThirtyMinutesAsleep() {
-        dayFour.calculateSleepTime();
-        int gaurdTwoSleepTime = dayFour.getGaurdsSleepCount(99);
-        assertEquals(30, gaurdTwoSleepTime);
-    }
-
-    @Test
-    public void givenInput_gaurdNinetyNineSleep240Minutes() {
-        int result = dayFour.calculateSleepTime();
+    public void givenStratergyOne_gaurdTenSpentTheMostTimeAsleep_andSpentMinuteTwentyFourAsleepTheMost_returningAScoreOf240() {
+        int result = dayFour.calculateStratergyPartOne();
         assertEquals(240, result);
+    }
+
+    @Test
+    public void givenStratergyTwo_guardNinetyNineSpentTheMostTimeAsleepAtOneTime_returningAScoreOPf4455() {
+        int result = dayFour.calculateStratergyPartTwo();
+        assertEquals(4455, result);
     }
 }
