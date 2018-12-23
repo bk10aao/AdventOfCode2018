@@ -24,23 +24,18 @@ public class DayFour {
         int mostSleptMinuteGaurdNumber = Integer.MIN_VALUE;
         int mostSleptMinute = Integer.MIN_VALUE;
         for(Guard g : gaurds) {
-            int[] timeSlots = g.timeSlots;
-            for(int i = 0; i < timeSlots.length; i++) {
-                if(timeSlots[i] > mostSleptValue) {
-                    mostSleptValue = timeSlots[i];
-                    mostSleptMinuteGaurdNumber = g.guardNumber;
-                    mostSleptMinute = i;
-                }
+            if(g.getMostSleptTimeSlotValue() > mostSleptValue) {
+                mostSleptValue = g.getMostSleptTimeSlotValue();
+                mostSleptMinuteGaurdNumber = g.guardNumber;
+                mostSleptMinute = g.getHighestSleptMinute();
             }
         }
         return mostSleptMinute * mostSleptMinuteGaurdNumber;
     }
 
     private void updateSleepTime(int guardNumber, int fallAsleepTime, String time) {
-        int wakeupTime;
-        wakeupTime = Integer.parseInt(time.split(":")[1]);
+        int wakeupTime = Integer.parseInt(time.split(":")[1]);
         int gaurdNumberIndex = getGuardNumberIndex(guardNumber);
-        gaurds.get(gaurdNumberIndex).timeSlept += wakeupTime - fallAsleepTime;
         gaurds.get(gaurdNumberIndex).incrementTimeSleptByAmount(fallAsleepTime, wakeupTime);
     }
 
@@ -50,11 +45,11 @@ public class DayFour {
         }
     }
 
-    private int getGuardNumber(String activity) {
+    private final int getGuardNumber(String activity) {
         return Integer.parseInt(activity.split("] ")[1].split(" ")[1].replace("#", ""));
     }
 
-    private int getGuardNumberIndex(int guardCheckNumber) {
+    private final int getGuardNumberIndex(int guardCheckNumber) {
         for(int i = 0; i < gaurds.size(); i++) {
             Guard gaurd = gaurds.get(i);
             if(gaurd.guardNumber == guardCheckNumber) return i;
@@ -62,15 +57,15 @@ public class DayFour {
         return -1;
     }
 
-    private String getAction(String activity) {
+    private final String getAction(String activity) {
         return activity.split("] ")[1];
     }
 
-    private String getTime(String activity) {
+    private final String getTime(String activity) {
         return activity.split(" ")[1].replace("]", "");
     }
 
-    public int getGuardThatSleptTheMost() {
+    private final int getGuardThatSleptTheMost() {
         int highestSleepTime = Integer.MIN_VALUE;
         int guardNumber = Integer.MIN_VALUE;
         for(Guard guard : gaurds) {
@@ -119,6 +114,7 @@ public class DayFour {
 
 
         public void incrementTimeSleptByAmount(final int sleepStartTime, final int wakeupTime) {
+            timeSlept += wakeupTime - sleepStartTime;
             for(int i = sleepStartTime; i < wakeupTime; i++) {
                 timeSlots[i]++;
             }
@@ -134,6 +130,15 @@ public class DayFour {
                 }
             }
             return highestSleptMinuteTimePoint;
+        }
+
+        private final int getMostSleptTimeSlotValue() {
+            int highestValue = Integer.MIN_VALUE;
+            for(int i = 0; i < timeSlots.length; i++) {
+                if(timeSlots[i] > highestValue)
+                    highestValue = timeSlots[i];
+            }
+            return highestValue;
         }
     }
 
